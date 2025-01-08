@@ -29,7 +29,7 @@ This is a simple console-based application for managing a personal blog. It incl
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/personal-blog.git
+   git clone https://github.com/r3iwan/personal-blog.git
    cd personal-blog
 2. Build and run the application:
    ```bash
