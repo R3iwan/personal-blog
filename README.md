@@ -2,6 +2,7 @@
 
 This is a simple console-based application for managing a personal blog. It includes two sections: **Guest Section** (for public access) and **Admin Section** (for authenticated users). The application allows for viewing, creating, editing, and deleting blog articles.
 
+Project URL: https://roadmap.sh/projects/personal-blog
 ---
 
 ## Features
