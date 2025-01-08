@@ -1,62 +1,43 @@
 package service
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
-	"sync"
-	"time"
 
 	"github.com/r3iwan/personal-blog/pkg/models"
 )
 
-var nextID = 1
-var mu sync.Mutex
-
-func AddArticle(savedArticles *models.SavedArticles) {
-	var title, content string
-	date := time.Now().Format("January 2, 2006")
-
-	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Println("Please enter the title of the article:")
-	title, _ = reader.ReadString('\n')
-	title = strings.TrimSpace(title)
-
-	fmt.Println("Please enter the content of the article:")
-	content, _ = reader.ReadString('\n')
-	content = strings.TrimSpace(content)
-
-	article := models.Article{
-		ID:      nextID,
-		Title:   title,
-		Date:    date,
-		Content: content,
-	}
-
-	*savedArticles = append(*savedArticles, article)
-
-	mu.Lock()
-	err := SaveArticleToJSON("articles.json", models.SavedArticles{article})
-	mu.Unlock()
-	if err != nil {
-		fmt.Println("Error saving articles to JSON file...")
-	}
-
-	nextID++
-
-}
-
 func ViewHomepage(savedArticles *models.SavedArticles) {
-	if len(*savedArticles) == 0 {
-		fmt.Println("Articles are empty")
+	if EmptyArticles(savedArticles) {
+		return
 	}
 
 	fmt.Println("--Personal Blog--")
 	for _, article := range *savedArticles {
 		fmt.Printf("%s \t\t %s\n", article.Title, article.Date)
+	}
+}
+
+func ViewArticle(savedArticles *models.SavedArticles) {
+	if EmptyArticles(savedArticles) {
+		return
+	}
+
+	var id int
+	fmt.Scan(&id)
+	found := false
+
+	for _, article := range *savedArticles {
+		if article.ID == id {
+			fmt.Printf("%s\n%s\n%s\n", article.Title, article.Date, article.Content)
+			found = true
+			break
+		}
+	}
+
+	if found {
+		fmt.Println("Articles are not found")
 	}
 }
 
@@ -108,3 +89,12 @@ func LoadArticlesFromJSON(filename string, savedArticles *models.SavedArticles) 
 
 	return nil
 }
+
+func EmptyArticles(savedArticles *models.SavedArticles) bool {
+	if len(*savedArticles) == 0 {
+		fmt.Println("Articles are empty")
+		return true
+	}
+	return false
+}
+
